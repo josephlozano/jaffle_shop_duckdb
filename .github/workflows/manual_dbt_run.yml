@@ -1,0 +1,35 @@
+name: dbt production run
+
+# Manual trigger
+on:
+  workflow_dispatch:
+
+jobs:
+  dbt_run:
+    name: Run dbt
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # Steps of the workflow:
+    steps:
+      - name: Checkout
+	      uses: actions/checkout@v3
+       
+      - name: Setup Python environment
+	      uses: actions/setup-python@v4
+	        with:
+	          python-version: "3.8"
+
+      - name: Install dependencies
+	      run: |
+          python -m pip install --upgrade pip
+	        python -m pip install -r requirements.txt
+	
+      - name: Install dbt packages
+	      run: dbt deps
+	    	
+      - name: Run models
+	      run: dbt run
+	
+      - name: Run tests
+	      run: dbt test
